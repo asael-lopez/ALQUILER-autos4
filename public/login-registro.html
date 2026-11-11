@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Santa Lucía Alquiler — Acceso</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="css/login-registro.css">
+</head>
+<body>
+
+<!-- Estructura HTML5 Semántica: MAIN wrap -->
+<main class="wrap">
+
+  <!-- Panel izquierdo: carrusel + identidad de marca (ASIDE) -->
+  <aside class="stage" aria-label="Galería e Identidad Santa Lucía">
+    <div class="carousel">
+      <div class="carousel-track">
+        <div class="carousel-slide carousel-slide-1 active"></div>
+        <div class="carousel-slide carousel-slide-2"></div>
+        <div class="carousel-slide carousel-slide-3"></div>
+        <div class="carousel-slide carousel-slide-4"></div>
+        <div class="carousel-slide carousel-slide-5"></div>
+      </div>
+      <div class="carousel-overlay"></div>
+    </div>
+
+    <!-- Contenido superpuesto (marca + copy) -->
+    <header class="stage-content">
+      <div class="brand-mark">
+        <span class="top">SANTA</span>
+        <span class="bottom">LUCÍA</span>
+        <span class="tag">ALQUILER</span>
+      </div>
+
+      <div class="stage-copy">
+        <div class="eyebrow">NUESTRA SUCURSAL</div>
+        <h1>Tu próximo viaje empieza con las llaves en la mano.</h1>
+        <p>Reserva compactos, SUV, híbridos y furgonetas en minutos. Gestiona tus reservas y tu historial desde una sola cuenta.</p>
+        <div class="stat-row">
+          <div>
+            <strong>100%</strong>
+            <span>Garantía Flota</span>
+          </div>
+          <div>
+            <strong>24/7</strong>
+            <span>Asistencia Vial</span>
+          </div>
+          <div>
+            <strong>4.9 <i class="fas fa-star" aria-hidden="true"></i></strong>
+            <span>Clientes Satisfechos</span>
+          </div>
+        </div>
+      </div>
+    </header>
+  </aside>
+
+  <!-- Panel derecho: formulario (SECTION) -->
+  <section class="panel-side" aria-label="Formulario de inicio de sesión y registro">
+    <div class="card-auth">
+
+      <!-- Barra de navegación para volver al inicio -->
+      <nav class="back-home-bar" aria-label="Navegación de retorno">
+        <a href="index.html" class="back-home-link" title="Regresar a la página principal">
+          <i class="fas fa-arrow-left"></i>
+          <span>Volver al inicio</span>
+        </a>
+      </nav>
+
+      <div class="brand-mark brand-mobile">
+        <span class="top">SANTA</span>
+        <span class="bottom">LUCÍA</span>
+        <span class="tag">ALQUILER</span>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button type="button" id="tabLogin" class="active" role="tab" aria-selected="true" data-auth-action="show-form" data-form="login">Iniciar sesión</button>
+        <button type="button" id="tabRegister" role="tab" aria-selected="false" data-auth-action="show-form" data-form="register">Crear cuenta</button>
+      </div>
+
+      <!-- Alerta de Error Global -->
+      <div class="global-auth-error" id="authErrorAlert" role="alert"></div>
+
+      <!-- ÉXITO -->
+      <div class="success-box" id="successBox">
+        <div class="icon"><i class="fas fa-check"></i></div>
+        <h3 id="successTitle">Bienvenido</h3>
+        <p id="successMsg">Has ingresado correctamente al sistema.</p>
+        <a href="index.html" class="btn btn-brand success-home-link mt-3">Ir al Inicio</a>
+      </div>
+
+      <!-- LOGIN -->
+      <form id="loginForm" novalidate>
+        <h2 class="form-title">Iniciar sesión</h2>
+        <p class="form-sub">Accede para gestionar tus reservas y tu flota.</p>
+
+        <div class="mb-3">
+          <label class="form-label" for="loginEmail">Correo electrónico</label>
+          <input type="email" class="form-control" id="loginEmail" placeholder="tucorreo@ejemplo.com" maxlength="254" required>
+          <div class="field-error">Ingresa un correo electrónico con formato válido.</div>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label" for="loginPass">Contraseña</label>
+          <div class="pass-wrap">
+            <input type="password" class="form-control" id="loginPass" placeholder="••••••••" required minlength="6" maxlength="128">
+            <button type="button" class="pass-toggle" data-target="loginPass">Mostrar</button>
+            <div class="field-error">La contraseña debe tener entre 6 y 128 caracteres.</div>
+          </div>
+        </div>
+
+        <div class="row-between">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="rememberMe">
+            <label class="form-check-label" for="rememberMe">Recordarme</label>
+          </div>
+          <button type="button" class="forgot-password-link" data-auth-action="forgot-password">¿Olvidaste tu contraseña?</button>
+        </div>
+
+        <button type="submit" class="btn-brand">Iniciar sesión</button>
+
+        <p class="switch-line">¿No tienes cuenta? <button type="button" data-auth-action="show-form" data-form="register">Regístrate</button></p>
+
+        <!-- Cuentas rápidas de prueba para revisión académica -->
+        <div class="demo-accounts">
+          <div class="demo-accounts-title">
+            <i class="fas fa-key text-danger"></i> Acceso de prueba (un clic para iniciar sesión):
+          </div>
+          <div class="demo-chips">
+            <button type="button" class="demo-chip" data-auth-action="fill-login" data-email="admin@santalucia.com" data-password="admin123">
+               Admin (admin@santalucia.com)
+            </button>
+            <button type="button" class="demo-chip" data-auth-action="fill-login" data-email="cliente@santalucia.com" data-password="cliente123">
+               Cliente (cliente@santalucia.com)
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- REGISTRO -->
+      <form id="registerForm" class="hidden" novalidate>
+        <h2 class="form-title">Crear cuenta</h2>
+        <p class="form-sub">Regístrate para reservar vehículos o gestionar el sistema.</p>
+
+        <div class="mb-3">
+          <label class="form-label" for="regName">Nombre completo</label>
+          <input type="text" class="form-control" id="regName" placeholder="Tu Nombre y Apellido" required minlength="3" maxlength="80">
+          <div class="field-error">Ingresa tu nombre completo (3 a 80 caracteres y al menos 3 letras).</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="regEmail">Correo electrónico</label>
+          <input type="email" class="form-control" id="regEmail" placeholder="tucorreo@ejemplo.com" maxlength="254" required>
+          <div class="field-error">Ingresa un correo válido (ej: usuario@dominio.com).</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="regPhone">Teléfono</label>
+          <input type="tel" class="form-control" id="regPhone" placeholder="00000000 o +34 600..." required maxlength="25">
+          <div class="field-error">Ingresa un teléfono válido (8 a 15 dígitos).</div>
+        </div>
+
+        <!-- Selección de Rol Requisito 5 -->
+        <div class="mb-3">
+          <label class="form-label" for="regRole">Tipo de cuenta / Rol</label>
+          <select class="form-select" id="regRole">
+            <option value="cliente" selected>Cliente (Reservas personales)</option>
+            <option value="admin">Administrador (Gestión y Control Total)</option>
+          </select>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label" for="regPass">Contraseña</label>
+          <div class="pass-wrap">
+            <input type="password" class="form-control" id="regPass" placeholder="6 a 128 caracteres" required minlength="6" maxlength="128">
+            <button type="button" class="pass-toggle" data-target="regPass">Mostrar</button>
+            <div class="field-error">La contraseña debe tener entre 6 y 128 caracteres.</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="regPass2">Confirmar contraseña</label>
+          <div class="pass-wrap">
+            <input type="password" class="form-control" id="regPass2" placeholder="Repite tu contraseña" required maxlength="128">
+            <button type="button" class="pass-toggle" data-target="regPass2">Mostrar</button>
+            <div class="field-error">Las contraseñas no coinciden.</div>
+          </div>
+        </div>
+
+        <div class="form-check mb-3">
+          <input class="form-check-input" type="checkbox" id="acceptTerms" required>
+          <label class="form-check-label" for="acceptTerms">Acepto los términos y la política de privacidad</label>
+          <div class="field-error terms-error" id="termsError">Debes aceptar los términos y condiciones.</div>
+        </div>
+
+        <button type="submit" class="btn-brand">Crear cuenta</button>
+
+        <p class="switch-line">¿Ya tienes cuenta? <button type="button" data-auth-action="show-form" data-form="login">Inicia sesión</button></p>
+      </form>
+
+    </div>
+  </section>
+</main>
+
+<!-- Gestor central de datos y almacenamiento -->
+<script src="js/app-data.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="js/login-registro.js"></script>
+</body>
+</html>

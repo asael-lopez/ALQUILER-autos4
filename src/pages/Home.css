@@ -1,0 +1,140 @@
+.home-page {
+  color: #f5f5f5;
+  background: #050505;
+}
+
+.home-hero {
+  position: relative;
+  min-height: min(680px, calc(100vh - 90px));
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #111;
+}
+
+.home-hero-video,
+.home-hero-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.home-hero-video {
+  object-fit: cover;
+}
+
+.home-hero-overlay {
+  background: linear-gradient(90deg, rgb(0 0 0 / 78%), rgb(0 0 0 / 22%));
+}
+
+.home-hero-content {
+  position: relative;
+  width: min(100% - 48px, 1200px);
+  padding: 100px 0;
+}
+
+.home-hero-content > span,
+.home-section-heading > span {
+  color: #dc2626;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.home-hero-content h1 {
+  max-width: 720px;
+  margin: 14px 0 28px;
+  font-size: clamp(2.6rem, 7vw, 5.5rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.home-hero-content button,
+.home-fleet-link {
+  padding: 13px 22px;
+  border: 1px solid #dc2626;
+  border-radius: 4px;
+  color: #fff;
+  background: #dc2626;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.home-hero-content button:hover,
+.home-fleet-link:hover {
+  border-color: #b91c1c;
+  background: #b91c1c;
+}
+
+.home-vehicles,
+.home-location {
+  width: min(100% - 48px, 1320px);
+  margin: 0 auto;
+  padding: 76px 0;
+}
+
+.home-section-heading {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.home-section-heading h2 {
+  margin: 10px 0;
+  font-size: clamp(1.7rem, 4vw, 2.5rem);
+}
+
+.home-section-heading p {
+  color: #aaa;
+}
+
+.home-vehicles-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.home-vehicle-card {
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #292929;
+  border-radius: 6px;
+  background: #111;
+  cursor: pointer;
+}
+
+.home-vehicle-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+.home-vehicle-card:hover img {
+  transform: scale(1.04);
+}
+
+.home-fleet-link {
+  display: block;
+  margin: 28px auto 0;
+}
+
+.home-location {
+  padding-top: 20px;
+}
+
+@media (max-width: 760px) {
+  .home-hero {
+    min-height: 520px;
+  }
+
+  .home-vehicles-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+}

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">Alquiler SantaLucía - Elige tu Vehículo</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#DC2626',
+                        'brand-dark': '#B91C1C'
+                    },
+                    screens: {
+                        xs: '420px'
+                    }
+                }
+            }
+        };
+    </script>
+
+
+   
+<body>
+
+    <!-- Header y navegación -->
+    <header class="header"> 
+        <nav class="navbar w-full max-w-[1500px] mx-auto px-5 lg:px-10">
+
+            <!-- Logo en Páginas Estáticas (Misma proporción compacta que React) -->
+            <a href="/index.html" class="logo-link" style="text-decoration: none; display: inline-block;">
+                <div class="logo" style="display: flex; flex-direction: column; line-height: 1;">
+        <span class="logo-oto" style="color: #ffffff; font-size: 1.25rem; font-weight: 700; font-family: 'Libre Baskerville', Georgia, serif !important; letter-spacing: -0.5px; text-transform: uppercase;">
+            SANTA
+        </span>
+                    <span class="logo-q" style="color: #dc2626; font-size: 1.5rem; font-weight: 700; margin-top: -2px; font-family: 'Libre Baskerville', Georgia, serif !important; letter-spacing: -0.5px; text-transform: uppercase;">
+            LUCÍA
+        </span>
+                    <span class="logo-sub" style="color: #dc2626; font-size: 0.55rem; font-weight: 700; margin-top: 1px; font-family: 'Libre Baskerville', Georgia, serif !important; letter-spacing: 3.5px; text-transform: uppercase;">
+            ALQUILER
+        </span>
+                </div>
+            </a>
+
+            <!-- Menú -->
+            <div class="nav-right">
+
+                <!-- Enlaces principales -->
+                <ul class="nav-menu">
+                    <li><a href="/index.html" class="nav-link" data-i18n="home">Inicio</a></li>
+                    <li><a href="/?tab=fleet" class="nav-link" data-i18n="ourFleet">Nuestra Flota</a></li>
+                    <li><a href="/?tab=dashboard" class="nav-link" data-i18n="dashboard">Panel de control</a></li>
+                    <li><a href="/?tab=reports" class="nav-link" data-i18n="reports">Reportes</a></li>
+                </ul>
+
+                <!-- Botón administrativo del header -->
+                <a href="login-registro.html" class="account-btn" id="accountBtn">
+                    <span class="account-btn-icon"><i class="fas fa-user"></i></span>
+                    <span data-i18n="myAccount">Mi Cuenta</span>
+                </a>
+
+                <!-- Perfil usuario (visible solo SI hay sesión) -->
+                <div class="profile-container" id="profileContainer" style="display:none;">
+                    <button type="button" class="profile-toggle" id="profileToggle" aria-haspopup="true" aria-expanded="false">
+                        <div class="profile-avatar" id="profileAvatarHeader">
+                            <i class="fas fa-user default-avatar-icon"></i>
+                        </div>
+                        <span class="profile-username-badge" id="profileUsernameBadge">Usuario</span>
+                    </button>
+
+                    <div class="profile-dropdown" id="profileDropdown" role="menu">
+                        <div class="profile-dropdown-header">
+                            <div class="profile-avatar profile-avatar-large" id="profileAvatarDropdown">
+                                <i class="fas fa-user default-avatar-icon"></i>
+                            </div>
+                            <div class="profile-dropdown-userinfo">
+                                <div class="profile-dropdown-username" id="profileDropdownUsername">Usuario</div>
+                                <button type="button" class="profile-edit-link" id="editProfileBtn">Editar perfil</button>
+                            </div>
+                        </div>
+                        <hr class="profile-divider">
+                        <ul class="profile-menu">
+                            <li class="profile-menu-item" role="menuitem" data-action="profile">
+                                <i class="fas fa-user profile-menu-icon"></i>
+                                <span>Mi perfil</span>
+                            </li>
+                            <li class="profile-menu-item" role="menuitem" data-action="notifications">
+                                <i class="fas fa-bell profile-menu-icon"></i>
+                                <span>Notificaciones</span>
+                            </li>
+                            <li class="profile-menu-item" role="menuitem" data-action="saved">
+                                <i class="fas fa-bookmark profile-menu-icon"></i>
+                                <span>Guardado</span>
+                            </li>
+                            <li class="profile-menu-item" role="menuitem" data-action="history">
+                                <i class="fas fa-history profile-menu-icon"></i>
+                                <span>Historial</span>
+                            </li>
+                        </ul>
+                        <div class="profile-language-selector">
+                            <span class="profile-language-label">
+                                <i class="fas fa-globe profile-menu-icon" aria-hidden="true"></i>
+                                <span data-i18n="language">Idioma</span>
+                            </span>
+                            <div class="profile-language-options">
+                                <button type="button" class="profile-language-button" role="menuitemradio" aria-checked="true" aria-pressed="true" data-lang="es">
+                                    Español
+                                </button>
+                                <button type="button" class="profile-language-button" role="menuitemradio" aria-checked="false" aria-pressed="false" data-lang="en">
+                                    English
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="profile-menu-item profile-logout-item" id="logoutBtn" role="menuitem">
+                            <span>Salir</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal de edición de perfil -->
+                <div class="profile-modal-overlay" id="profileModalOverlay" style="display:none;">
+                    <div class="profile-modal" id="profileModal">
+                        <button type="button" class="profile-modal-close" id="closeProfileModal" aria-label="Cerrar">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <h3 class="profile-modal-title">Editar perfil</h3>
+
+                        <div class="profile-avatar-upload">
+                            <div class="profile-avatar profile-avatar-xl" id="profileAvatarEdit">
+                                <i class="fas fa-user default-avatar-icon"></i>
+                            </div>
+                            <label class="profile-upload-btn" for="avatarInput">
+                                <i class="fas fa-camera"></i>
+                                <span>Cambiar foto</span>
+                            </label>
+                            <input type="file" id="avatarInput" accept="image/*" style="display:none;">
+                        </div>
+
+                        <form id="editProfileForm" class="profile-form">
+                            <div class="profile-form-group">
+                                <label for="editName" class="profile-form-label">Nombre completo</label>
+                                <input type="text" id="editName" class="profile-form-input" placeholder="Tu nombre">
+                            </div>
+                            <div class="profile-form-group">
+                                <label for="editEmail" class="profile-form-label">Correo electrónico</label>
+                                <input type="email" id="editEmail" class="profile-form-input" placeholder="tucorreo@ejemplo.com" readonly>
+                            </div>
+                            <div class="profile-form-group">
+                                <label for="editPhone" class="profile-form-label">Teléfono</label>
+                                <input type="tel" id="editPhone" class="profile-form-input" placeholder="0000000000">
+                            </div>
+                            <button type="submit" class="profile-save-btn">Guardar cambios</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Botón menú móvil -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Abrir menú" aria-expanded="false">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                </button>
+
+            </div>
+        </nav>
+    </header>
+
+    <!-- Menú móvil -->
+    <div class="mobile-menu" id="mobileMenu">
+        <!-- Enlaces móvil -->
+        <ul class="mobile-nav-menu">
+            <li><a href="index.html" class="mobile-nav-link" aria-current="page" data-i18n="home">Inicio</a></li>
+            <li><a href="/?tab=fleet" class="mobile-nav-link" data-i18n="ourFleet">Nuestra Flota</a></li>
+                    <li><a href="/?tab=dashboard" class="mobile-nav-link" data-i18n="dashboard">Panel de control</a></li>
+                    <li><a href="/?tab=reports" class="mobile-nav-link" data-i18n="reports">Reportes</a></li>
+            <li><a href="login-registro.html" class="mobile-nav-link mobile-nav-link-accent" data-i18n="myAccount">Mi Cuenta</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero / Video fondo -->
+    <section class="hero">
+
+        <!-- Video de fondo -->
+        <video class="hero-video" autoplay muted loop playsinline poster="/fotos/KIA2.jpg">
+            <source src="/kia.mp4" type="video/mp4">
+            Tu navegador no soporta la etiqueta de video HTML5.
+        </video>
+
+        <!-- Overlay oscuro -->
+        <div class="hero-overlay"></div>
+
+        <!-- Texto fijo hero -->
+        <div class="hero-content">
+            <span class="hero-subtitle" data-i18n="fleet">FLOTA</span>
+            <h1 class="hero-title" data-i18n="chooseVehicle">ELIGE TU VEHÍCULO</h1>
+        </div>
+
+    </section>
+
+    <!-- Widget flotante derecho DESPLEGABLE -->
+    <aside class="floating-widget" id="floatingWidget">
+        <div class="widget-panel">
+            <a href="#" class="widget-item" title="Refrescar">
+                <i class="fas fa-sync-alt"></i>
+            </a>
+            <a href="#" class="widget-item" title="WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+            <a href="https://www.tiktok.com/@alquilersantalucia?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" class="widget-item" title="TikTok">
+                <i class="fab fa-tiktok"></i>
+            </a>
+            <a href="#" class="widget-item" title="Teléfono">
+                <i class="fas fa-phone"></i>
+            </a>
+        </div>
+        <button class="widget-toggle" id="widgetToggle" aria-label="Abrir menú">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    </aside>
+
+    <!-- Línea roja divisoria -->
+    <div class="red-divider"></div>
+
+    <!-- ========== GRID DE VEHÍCULOS (4 tarjetas en fila) ========== -->
+    <section class="vehicles-section w-full max-w-[1500px] mx-auto px-4 sm:px-5 lg:px-10">
+        <div class="vehicles-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
+
+            <!-- Coche 1 -->
+            <article class="vehicle-card">
+                <div class="vehicle-image-wrap">
+                    <img src="fotos/1.jpg" alt="Coche 1" class="vehicle-image">
+                </div>
+            </article>
+
+            <!-- Coche 2 -->
+            <article class="vehicle-card">
+                <div class="vehicle-image-wrap">
+                    <img src="fotos/2.jpg" alt="Coche 2" class="vehicle-image">
+                </div>
+            </article>
+
+            <!-- Coche 3 -->
+            <article class="vehicle-card">
+                <div class="vehicle-image-wrap">
+                    <img src="fotos/3.jpg" alt="Coche 3" class="vehicle-image">
+                </div>
+            </article>
+
+            <!-- Coche 4 -->
+            <article class="vehicle-card">
+                <div class="vehicle-image-wrap">
+                    <img src="fotos/4.jpg" alt="Coche 4" class="vehicle-image">
+                </div>
+            </article>
+
+        </div>
+    </section>
+
+    <!-- ========== MAPA / DÓNDE ENCONTRARNOS ========== -->
+    <section class="location-section" id="location">
+        <div class="location-container">
+            <div class="location-heading">
+                <span class="location-eyebrow" data-i18n="locationEyebrow">Nuestra ubicación</span>
+                <h2 data-i18n="locationHeading">Dónde encontrarnos</h2>
+                <p data-i18n="locationDescription">Encuentra nuestra sucursal y calcula la distancia desde tu dirección.</p>
+            </div>
+
+            <div class="location-layout">
+                <iframe
+                    title="Mapa de sucursales y búsqueda de dirección"
+                    src="/?tab=location&amp;embed=map"
+                    loading="lazy"
+                    style="grid-column: 1 / -1; display: block; width: 100%; height: 560px; border: 0;"
+                ></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal de Información General (Oficinas, Empresa, etc.) -->
+    <div class="info-modal-overlay" id="infoModalOverlay" style="display:none;" aria-hidden="true">
+        <div class="info-modal-dialog">
+            <button type="button" class="info-modal-close" id="closeInfoModal" aria-label="Cerrar">&times;</button>
+            <h3 class="reservation-modal-title" id="infoModalTitle">Información</h3>
+            <div id="infoModalContent" class="text-sm text-gray-300 space-y-3 leading-relaxed mt-4"></div>
+            <div class="res-form-actions mt-6" style="display:flex; justify-content:flex-end;">
+                <button type="button" class="btn-brand" id="closeInfoModalBtn" style="width:auto; padding:8px 20px;">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== FOOTER / PIE DE PÁGINA ========== -->
+    <footer class="footer">
+        <div class="footer-container">
+
+            <!-- Columna 1: Empresa -->
+            <div class="footer-col footer-brand">
+                <div class="logo footer-logo">
+                    <span class="logo-oto">SANTA</span>
+                    <span class="logo-q">LUCÍA</span>
+                    <span class="logo-sub" data-i18n="logoSub">ALQUILER</span>
+                </div>
+                <p class="footer-tagline" data-i18n="footerTagline">Alquiler de vehículos con la mejor flota y atención personalizada. Muévete con libertad, estilo y confianza.</p>
+                <div class="footer-social">
+                    <a href="#" class="social-link" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@alquilersantalucia?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" class="social-link" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="#" class="social-link" title="X"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#" class="social-link" title="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-link" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+
+            <!-- Columna 2: Enlaces rápidos -->
+            <div class="footer-col">
+                <h4 class="footer-title" data-i18n="footerQuickLinks">Enlaces Rápidos</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html" data-i18n="home">Inicio</a></li>
+                    <li><a href="/?tab=fleet" data-i18n="ourFleet">Nuestra Flota</a></li>
+                    <li><a href="#" data-i18n="offices">Oficinas</a></li>
+                    <li><a href="#" data-i18n="whoWeAre">Quiénes Somos</a></li>
+                    <li><a href="#" data-i18n="ourTeam">Nuestro Equipo</a></li>
+                    <li><a href="#" data-i18n="footerOffers">Ofertas</a></li>
+                </ul>
+            </div>
+
+            <!-- Columna 3: Servicios -->
+            <div class="footer-col">
+                <h4 class="footer-title" data-i18n="footerServices">Servicios</h4>
+                <ul class="footer-links">
+                    <li><a href="#" data-i18n="footerLongTerm">Alquiler Largo Plazo</a></li>
+                    <li><a href="#" data-i18n="footerCorporate">Corporativos</a></li>
+                    <li><a href="#" data-i18n="footerDelivery">Entrega a Domicilio</a></li>
+                    <li><a href="#" data-i18n="footerAirport">Recogida Aeropuerto</a></li>
+                    <li><a href="#" data-i18n="footerInsurance">Seguros</a></li>
+                    <li><a href="#" data-i18n="footerAssistance">Asistencia 24/7</a></li>
+                </ul>
+            </div>
+
+            <!-- Columna 4: Contacto -->
+            <div class="footer-col footer-contact">
+                <h4 class="footer-title" data-i18n="footerContact">Contacto</h4>
+                <ul class="contact-list">
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span data-i18n="footerAddress">Av. Principal 123, Centro, Santa Lucia, Soyapango.</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-phone"></i>
+                        <a href="tel:+34900123456">+503 7577-2971</a>
+                    </li>
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        <a href="mailto:info@santalucia.com">info@santalucia.com</a>
+                    </li>
+                    <li>
+                        <i class="far fa-clock"></i>
+                        <span data-i18n="footerSchedule">Lun-Sáb: 08:00 - 20:00</span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- Franja inferior: Legal + Copyright -->
+        <div class="footer-bottom">
+            <div class="footer-container footer-bottom-inner">
+                <p class="footer-copy">&copy; <span id="year"></span> <span data-i18n="footerCopy">SantaLucía Alquiler. Todos los derechos reservados.</span></p>
+                <ul class="footer-legal">
+                    <li><a href="#" data-i18n="footerPrivacy">Privacidad</a></li>
+                    <li><a href="#" data-i18n="footerTerms">Términos y Condiciones</a></li>
+                    <li><a href="#" data-i18n="footerCookies">Política de Cookies</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app-data.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

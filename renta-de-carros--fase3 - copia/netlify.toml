@@ -1,0 +1,7 @@
+[build]
+  publish = "renta-carros-santa-lucia"
+
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
