@@ -2,8 +2,8 @@
 
 Sistema web de renta de vehículos que permite consultar la flota, realizar reservas, administrar el catálogo, registrar mantenimientos y consultar reportes. Proyecto de cátedra de la asignatura *Desarrollo de Aplicaciones Web con Software Interpretados en el Cliente*, Facultad de Ingeniería, Universidad Don Bosco (UDB).
 
-**Aplicación desplegada:** [COMPLETAR: enlace de Vercel/Netlify/GitHub Pages]
-**Diseño en Figma:** [COMPLETAR: enlace al Figma de la Etapa 1]
+**Aplicación desplegada:** https://alquiler-autos4-k6kb-7sjsifg7r-steven-aparicio.vercel.app/
+**Diseño en Figma:** 
 
 ---
 
@@ -43,7 +43,7 @@ La aplicación web expone la flota, los modelos y los precios de forma clara, y 
 - **Leaflet** y teselas de OpenStreetMap para los mapas
 - **lucide-react** (íconos) y **SweetAlert2** (modales y confirmaciones)
 - **ESLint** para el análisis estático
-- Hosting: [COMPLETAR]
+- Hosting: Vercel.
 
 ## Mockups
 
