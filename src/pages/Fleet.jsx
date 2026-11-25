@@ -1,9 +1,15 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Swal from 'sweetalert2';
 import { useApp } from '../context/useApp';
 import { CarCard } from '../components/CarCard';
 import { SearchBar } from '../components/SearchBar';
+import { CurrencySelector } from '../components/CurrencySelector';
+import { useCurrency } from '../context/useCurrency';
 import { formatUSD, getPublicRateSummary, getRentalQuote } from '../utils/rentalPricing';
+import { formatMoney } from '../services/exchangeService';
+import { fetchWeatherForRange, formatWeatherSummary } from '../services/weatherService';
+import { getDistanceKm } from '../services/mapaService';
+import { MAIN_BRANCH } from '../data/branches';
 
 const WHATSAPP_PHONE = '50361535807';
 
@@ -43,8 +49,10 @@ export const Fleet = () => {
         userEmail,
         favorites,
         toggleFavorite,
-        registerCarView
+        registerCarView,
+        userLocation
     } = useApp();
+    const { currency, rates: fxRates, ratesDate, convert } = useCurrency();
 
     const handleOpenReservation = (car) => {
         if (!car) return;
@@ -71,6 +79,24 @@ export const Fleet = () => {
         const next3Days = formatDate(new Date(Date.now() + 3 * 24 * 60 * 60 * 1000));
         const rates = getPublicRateSummary(car);
         const defaultQuote = getRentalQuote(car, 3);
+
+        // --- Datos de APIs externas que entran al flujo de reserva ---
+        // 1) Tipo de cambio (Frankfurter): equivalente del total en otra moneda.
+        const fxLabel = (amountUSD) => {
+            if (currency === 'USD') return '';
+            const converted = convert(amountUSD, currency);
+            return converted === null ? '' : `≈ ${formatMoney(converted, currency)} (referencial, se cobra en USD)`;
+        };
+        // 2) Geocodificación (Nominatim): distancia de la dirección buscada en el mapa.
+        const distanceKm = userLocation
+            ? getDistanceKm(
+                [MAIN_BRANCH.latitude, MAIN_BRANCH.longitude],
+                [userLocation.lat, userLocation.lon]
+            )
+            : null;
+        // 3) Clima (Open-Meteo): se actualiza al cambiar las fechas.
+        let weatherText = '';
+        let weatherRequestId = 0;
 
         Swal.fire({
             html: `
@@ -131,6 +157,12 @@ export const Fleet = () => {
                             <span style="font-size: 0.82rem; color: #a3a3a3;"><span id="lbl-days">3 días</span> · Total estimado</span>
                             <strong id="lbl-total" style="font-size: 1.25rem; color: #dc2626;">${formatUSD(defaultQuote.total)}</strong>
                         </div>
+                        <p id="lbl-total-fx" style="font-size: 0.78rem; color: #a3a3a3; margin: 6px 0 0; text-align: right;">${fxLabel(defaultQuote.total)}</p>
+                        ${distanceKm !== null ? `
+                        <p style="font-size: 0.78rem; color: #a3a3a3; margin: 8px 0 0;">
+                            📍 La dirección que buscaste en el mapa está a ${distanceKm.toFixed(1)} km de la sucursal.
+                        </p>` : ''}
+                        <p id="lbl-weather" style="font-size: 0.78rem; color: #a3a3a3; margin: 8px 0 0;">Clima en la sucursal: consultando pronóstico...</p>
                         <p id="lbl-rate-summary" style="font-size: 0.74rem; color: #a3a3a3; margin: 8px 0 0;">
                             Tarifa aplicada: ${formatUSD(defaultQuote.dailyRate)}/día
                             ${defaultQuote.discountRate ? ` · ${Math.round(defaultQuote.discountRate * 100)}% menos por duración` : ''}
@@ -162,12 +194,43 @@ export const Fleet = () => {
                     const quote = getRentalQuote(car, days, extrasPerDay);
                     document.getElementById('lbl-days').innerText = `${days} días`;
                     document.getElementById('lbl-total').innerText = formatUSD(quote.total);
+                    document.getElementById('lbl-total-fx').innerText = fxLabel(quote.total);
                     document.getElementById('lbl-rate-summary').innerText = [
                         `Tarifa aplicada: ${formatUSD(quote.dailyRate)}/día`,
                         quote.discountRate ? `${Math.round(quote.discountRate * 100)}% menos por duración` : '',
                         extrasPerDay ? `Extras: ${formatUSD(extrasPerDay)}/día` : ''
                     ].filter(Boolean).join(' · ');
                 };
+
+                const refreshWeather = () => {
+                    const label = document.getElementById('lbl-weather');
+                    if (!label) return;
+                    const requestId = ++weatherRequestId;
+                    weatherText = '';
+                    label.innerText = 'Clima en la sucursal: consultando pronóstico...';
+                    fetchWeatherForRange(
+                        document.getElementById('swal-pickup').value,
+                        document.getElementById('swal-return').value
+                    )
+                        .then((weather) => {
+                            if (requestId !== weatherRequestId) return;
+                            weatherText = formatWeatherSummary(weather);
+                            label.innerText = `Clima en la sucursal: ${weather.summary.icon} ${weatherText}`;
+                        })
+                        .catch((error) => {
+                            if (requestId !== weatherRequestId) return;
+                            weatherText = '';
+                            label.innerText = `Clima en la sucursal: ${error.message}`;
+                        });
+                };
+                let weatherTimer = null;
+                ['swal-pickup', 'swal-return'].forEach((id) => {
+                    document.getElementById(id)?.addEventListener('change', () => {
+                        window.clearTimeout(weatherTimer);
+                        weatherTimer = window.setTimeout(refreshWeather, 350);
+                    });
+                });
+                refreshWeather();
 
                 ['swal-pickup', 'swal-return', 'extra-seguro', 'extra-gps', 'extra-silla'].forEach((id) => {
                     const el = document.getElementById(id);
@@ -241,6 +304,13 @@ export const Fleet = () => {
                     lugar: location,
                     extras,
                     monto: quote.total,
+                    // Datos provenientes de APIs externas
+                    monedaReferencia: currency,
+                    tasaCambio: currency === 'USD' ? 1 : (fxRates[currency] ?? null),
+                    totalReferencia: currency === 'USD' ? null : convert(quote.total, currency),
+                    fechaTasaCambio: currency === 'USD' ? null : ratesDate,
+                    climaEstimado: weatherText || null,
+                    distanciaSucursalKm: distanceKm === null ? null : Number(distanceKm.toFixed(2)),
                     estado: 'Pendiente',
                     clienteNombre: currentUser?.name || 'Cliente',
                     usuario: currentUser?.email || userEmail,
@@ -262,8 +332,15 @@ export const Fleet = () => {
                     `Fechas: ${reservation.fechaInicio} al ${reservation.fechaFin}`,
                     `Tarifa diaria base: ${formatUSD(reservation.precioDia)}`,
                     `Descuento por duración: ${Math.round((reservation.descuentoDuracion || 0) * 100)}%`,
-                    `Total estimado: ${formatUSD(reservation.monto)}`
-                ].join('\n');
+                    `Total estimado: ${formatUSD(reservation.monto)}`,
+                    reservation.totalReferencia != null
+                        ? `Equivalente referencial: ${formatMoney(reservation.totalReferencia, reservation.monedaReferencia)}`
+                        : '',
+                    reservation.distanciaSucursalKm != null
+                        ? `Distancia a la sucursal: ${reservation.distanciaSucursalKm} km`
+                        : '',
+                    reservation.climaEstimado ? `Clima estimado: ${reservation.climaEstimado}` : ''
+                ].filter(Boolean).join('\n');
                 const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
 
                 Swal.fire({
@@ -271,7 +348,9 @@ export const Fleet = () => {
                     title: 'Solicitud guardada',
                     html: `
                         <p style="margin: 0 0 8px;">${reservation.autoNombre} · ${reservation.fechaInicio} al ${reservation.fechaFin}</p>
-                        <p style="margin: 0 0 14px;">Total estimado: <strong>${formatUSD(reservation.monto)}</strong></p>
+                        <p style="margin: 0 0 14px;">Total estimado: <strong>${formatUSD(reservation.monto)}</strong>
+                            ${reservation.totalReferencia != null ? `<br><span style="font-size: 0.85rem; color: #a3a3a3;">≈ ${formatMoney(reservation.totalReferencia, reservation.monedaReferencia)} (referencial)</span>` : ''}
+                        </p>
                         <p style="font-size: 0.88rem; color: #a3a3a3; margin: 0 0 14px;">
                             El PDF con los datos del vehículo y tu perfil está listo. La solicitud ya aparece en tus reservas.
                         </p>
@@ -416,6 +495,20 @@ export const Fleet = () => {
         if (car?.id) registerCarView?.(car.id);
     };
     const closeCarDetails = () => setSelectedCar(null);
+
+    // Mientras la ventana de detalles está abierta, se bloquea el scroll de la
+    // página de fondo para que la rueda del mouse desplace solo la ventana.
+    useEffect(() => {
+        if (!selectedCar) return undefined;
+        const previousBody = document.body.style.overflow;
+        const previousHtml = document.documentElement.style.overflow;
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = previousBody;
+            document.documentElement.style.overflow = previousHtml;
+        };
+    }, [selectedCar]);
     const selectedCarRates = selectedCar ? getPublicRateSummary(selectedCar) : null;
 
     return (
@@ -550,6 +643,7 @@ export const Fleet = () => {
                 </aside>
 
                 <div className="rental-main-content">
+                    <CurrencySelector />
                     <SearchBar value={search} onChange={setSearch} />
                     <div className="rental-top-bar">
                         <div className="rental-options-count">

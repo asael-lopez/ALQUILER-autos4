@@ -56,7 +56,16 @@ export function createReservationPdf(reservation) {
         ['Duracion', `${reservation.dias} dias`],
         ['Lugar de entrega', reservation.lugar],
         ['Servicios adicionales', reservation.extras?.join(', ') || 'Ninguno'],
-        ['Total estimado', `$${Number(reservation.monto || 0).toFixed(2)} USD`]
+        ['Total estimado', `$${Number(reservation.monto || 0).toFixed(2)} USD`],
+        ...(reservation.totalReferencia != null ? [[
+            'Equivalente referencial',
+            `${Number(reservation.totalReferencia).toFixed(2)} ${reservation.monedaReferencia}` +
+            ` (tasa del ${reservation.fechaTasaCambio || 'dia de la solicitud'}, se cobra en USD)`
+        ]] : []),
+        ...(reservation.distanciaSucursalKm != null
+            ? [['Distancia a la sucursal', `${reservation.distanciaSucursalKm} km`]] : []),
+        ...(reservation.climaEstimado
+            ? [['Clima estimado en sucursal', reservation.climaEstimado.replace(/°/g, '')]] : [])
     ]);
 
     addSection('Cliente', [

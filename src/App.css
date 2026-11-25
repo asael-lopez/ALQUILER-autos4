@@ -1379,6 +1379,9 @@ input {
   gap: 0;
   width: min(900px, 100%);
   max-height: min(90vh, 820px);
+  /* La fila ocupa solo el alto disponible: así el scroll ocurre dentro de
+     la columna de contenido y no en la página de fondo. */
+  grid-template-rows: minmax(0, 1fr);
   background: #121212;
   border: 1px solid rgba(255,255,255,0.06);
   border-radius: 20px;
@@ -1419,7 +1422,9 @@ input {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  justify-content: safe center;
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .fleet-details-eyebrow {
@@ -1583,10 +1588,14 @@ input {
 
   .fleet-details-modal {
     grid-template-columns: 1fr;
+    grid-template-rows: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   .fleet-details-content {
     padding: 24px 18px 20px;
+    overflow-y: visible;
   }
 
   .cat-card-pricing {

@@ -8,24 +8,13 @@ import 'leaflet/dist/leaflet.css';
 import './MapaSucursales.css';
 import { useApp } from '../context/useApp';
 import { getDistanceKm, geocodeAddress } from '../services/mapaService';
+import { BRANCHES } from '../data/branches';
 
 L.Icon.Default.mergeOptions({
     iconRetinaUrl: markerIcon2x,
     iconUrl: markerIcon,
     shadowUrl: markerShadow
 });
-
-const BRANCHES = [
-    {
-        id: 'santa-lucia-soyapango',
-        name: 'Alquiler SantaLucía',
-        latitude: 13.703628,
-        longitude: -89.150161,
-        address: 'Av. Principal 123, Centro, Santa Lucia, Soyapango.',
-        hours: 'Lun-Sáb: 08:00 - 20:00',
-        phone: '+503 7577-2971'
-    }
-];
 
 const branchIcon = L.divIcon({
     className: 'location-custom-div-icon',
@@ -60,7 +49,7 @@ function MapViewport({ branch, userLocation }) {
     return null;
 }
 
-export function MapaSucursales() {
+export function MapaSucursales({ onTabChange }) {
     const { selectedBranch, setSelectedBranch, userLocation, setUserLocation } = useApp();
     const [address, setAddress] = useState('');
     const [isSearching, setIsSearching] = useState(false);
@@ -187,6 +176,22 @@ export function MapaSucursales() {
                     <p className="location-distance" aria-live="polite">
                         Distancia aproximada a la sucursal: {distance.toFixed(2)} km.
                     </p>
+                )}
+                {distance !== null && onTabChange && (
+                    <>
+                        <p className="location-status">
+                            Esta distancia se guardará en tu próxima solicitud de reserva.
+                        </p>
+                        <button
+                            type="button"
+                            className="location-directions"
+                            style={{ border: 0, cursor: 'pointer', font: 'inherit' }}
+                            onClick={() => onTabChange('fleet')}
+                        >
+                            <i className="fas fa-car" aria-hidden="true"></i>
+                            Reservar un vehículo
+                        </button>
+                    </>
                 )}
                 <a className="location-directions" href={directionsUrl.toString()} target="_blank" rel="noopener noreferrer">
                     <i className="fas fa-route" aria-hidden="true"></i>

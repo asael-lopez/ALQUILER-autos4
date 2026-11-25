@@ -154,7 +154,7 @@ export const AdminDashboard = () => {
 
     // Actividad de los últimos 7 días (movimientos de flota)
     const last7Days = useMemo(() => {
-        const limit = Date.now() - 7 * 24 * 60 * 60 * 1000;
+        const limit = new Date().getTime() - 7 * 24 * 60 * 60 * 1000;
         return scopedMovements.filter((m) => new Date(m.fecha).getTime() >= limit).length;
     }, [scopedMovements]);
 

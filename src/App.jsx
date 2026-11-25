@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import { AppProvider } from './context/AppContext.jsx';
+import { CurrencyProvider } from './context/CurrencyContext.jsx';
 import { useApp } from './context/useApp.js';
 import { translateAttribute, translateText } from './i18n.js';
 import { getSession } from './services/auth.js';
@@ -163,7 +164,7 @@ function AppContent() {
                 {activeTab === 'admin-dashboard' && <AdminDashboard />}
                 {activeTab === 'admin-gestion' && <AdminGestion />}
                 {activeTab === 'reports' && <Reports />}
-                {activeTab === 'location' && <MapaSucursales />}
+                {activeTab === 'location' && <MapaSucursales onTabChange={handleTabChange} />}
             </main>
             <SiteFooter onTabChange={handleTabChange} />
         </div>
@@ -173,7 +174,9 @@ function AppContent() {
 export default function App() {
     return (
         <AppProvider>
-            <AppContent />
+            <CurrencyProvider>
+                <AppContent />
+            </CurrencyProvider>
         </AppProvider>
     );
 }

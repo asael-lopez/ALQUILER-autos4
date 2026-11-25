@@ -1,5 +1,6 @@
 import { Button } from './Button';
 import { formatUSD, getPublicRateSummary } from '../utils/rentalPricing';
+import { useCurrency } from '../context/useCurrency';
 
 export function CarCard({
     car,
@@ -13,6 +14,8 @@ export function CarCard({
     deleteButtonStyle,
     variant = 'catalog'
 }) {
+    const { formatEquivalent } = useCurrency();
+
     if (variant === 'table') {
         const statusName = car.status || (car.disponible ? 'Disponible' : 'Alquilado');
         return (
@@ -106,6 +109,11 @@ export function CarCard({
                 <div>
                     <span className="cat-card-price-label">Tarifa diaria real</span>
                     <strong>{formatUSD(rates.dailyRate)} <span>/día</span></strong>
+                    {formatEquivalent(rates.dailyRate) && (
+                        <small className="cat-card-price-fx" style={{ display: 'block', color: '#a3a3a3', fontSize: '0.78rem' }}>
+                            {formatEquivalent(rates.dailyRate)} /día
+                        </small>
+                    )}
                 </div>
             </div>
 

@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useApp } from '../context/useApp';
+import { WeatherForecast } from '../components/WeatherForecast';
+import { formatMoney } from '../services/exchangeService';
 import {
     AlertCircle,
     CalendarCheck,
@@ -320,9 +322,26 @@ function ReservationDetails({ reservation, image, onClose }) {
                         </div>
                         <div>
                             <dt><CarFront size={16} /> Duración y total</dt>
-                            <dd>{reservation.dias || '—'} día(s) · ${(parseFloat(reservation.monto) || 0).toFixed(2)}</dd>
+                            <dd>
+                                {reservation.dias || '—'} día(s) · ${(parseFloat(reservation.monto) || 0).toFixed(2)}
+                                {reservation.totalReferencia != null && (
+                                    <small style={{ display: 'block', color: '#a3a3a3' }}>
+                                        ≈ {formatMoney(reservation.totalReferencia, reservation.monedaReferencia)} (tasa del {reservation.fechaTasaCambio || 'día de la solicitud'})
+                                    </small>
+                                )}
+                            </dd>
                         </div>
+                        {reservation.distanciaSucursalKm != null && (
+                            <div>
+                                <dt><MapPin size={16} /> Distancia a la sucursal</dt>
+                                <dd>{reservation.distanciaSucursalKm} km</dd>
+                            </div>
+                        )}
                     </dl>
+                    {!['Rechazada', 'Cancelada', 'Completada'].includes(reservation.estado)
+                        && reservation.fechaInicio && reservation.fechaFin && (
+                        <WeatherForecast startDate={reservation.fechaInicio} endDate={reservation.fechaFin} />
+                    )}
                     <button className="reservation-modal-done" type="button" onClick={onClose}>Entendido</button>
                 </div>
             </section>
