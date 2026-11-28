@@ -61,6 +61,7 @@ const englishTranslations = {
     'Ingresa un teléfono válido (8 a 15 dígitos).': 'Enter a valid phone number (8–15 digits).',
     'Debes aceptar los términos y condiciones.': 'You must accept the terms and conditions.',
     'Ingresa un correo electrónico válido.': 'Enter a valid email address.',
+    'Ingresa tu correo electrónico.': 'Enter your email address.',
     'Ingresa un teléfono válido con entre 8 y 15 dígitos.': 'Enter a valid phone number with 8–15 digits.',
     'El nombre debe tener entre 3 y 80 caracteres e incluir al menos 3 letras.': 'Name must be 3–80 characters and include at least 3 letters.',
     'Este correo ya se encuentra registrado. Inicia sesión.': 'This email is already registered. Sign in.',

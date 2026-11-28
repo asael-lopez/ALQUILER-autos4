@@ -64,7 +64,7 @@ export function Login({ onNavigate }) {
         if (!isValidEmail(email)) {
             nextErrors.email = 'Ingresa un correo electrónico con formato válido.';
         }
-        if (credentials.password.trim().length < 6 || credentials.password.length > 128) {
+        if (!credentials.password.trim() || credentials.password.length < 6 || credentials.password.length > 128) {
             nextErrors.password = 'La contraseña debe tener entre 6 y 128 caracteres.';
         }
         setErrors(nextErrors);
