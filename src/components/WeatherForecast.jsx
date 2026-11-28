@@ -1,15 +1,17 @@
 import { useWeatherForecast } from '../hooks/useWeatherForecast';
 import { describeWeatherCode } from '../services/weatherService';
+import { useApp } from '../context/useApp';
 
-const formatShortDate = (isoDate) => {
+const formatShortDate = (isoDate, language) => {
     const [year, month, day] = isoDate.split('-').map(Number);
-    return new Date(year, month - 1, day).toLocaleDateString('es-SV', { weekday: 'short', day: 'numeric', month: 'short' });
+    return new Date(year, month - 1, day).toLocaleDateString(language === 'en' ? 'en-US' : 'es-SV', { weekday: 'short', day: 'numeric', month: 'short' });
 };
 
 // Pronóstico del clima en la sucursal para las fechas de una reserva
 // (API externa Open-Meteo). Se usa en el detalle de "Mis reservas".
 export function WeatherForecast({ startDate, endDate }) {
     const { status, data, error } = useWeatherForecast(startDate, endDate);
+    const { language } = useApp();
 
     return (
         <section className="weather-forecast" aria-label="Pronóstico del clima" style={{
@@ -29,7 +31,7 @@ export function WeatherForecast({ startDate, endDate }) {
                             const info = describeWeatherCode(day.code);
                             return (
                                 <li key={day.date} style={{ minWidth: '92px', padding: '8px', borderRadius: '6px', background: '#202020', textAlign: 'center', fontSize: '0.76rem' }}>
-                                    <span style={{ display: 'block', color: '#a3a3a3' }}>{formatShortDate(day.date)}</span>
+                                    <span style={{ display: 'block', color: '#a3a3a3' }}>{formatShortDate(day.date, language)}</span>
                                     <span style={{ display: 'block', fontSize: '1.3rem' }} aria-hidden="true">{info.icon}</span>
                                     <span style={{ display: 'block' }}>{info.label}</span>
                                     <strong>{day.tempMin}°–{day.tempMax}°C</strong>
