@@ -69,7 +69,7 @@ function AppContent() {
             const records = attributeRecords.current.get(element) || new Map();
             for (const attribute of Array.from(element.attributes)) {
                 const name = attribute.name.toLowerCase();
-                if (!['title', 'placeholder', 'aria-label', 'alt'].includes(name)) continue;
+                if (!['title', 'placeholder', 'aria-label', 'alt', 'data-tooltip'].includes(name)) continue;
 
                 let record = records.get(name);
                 if (!record) {
@@ -117,7 +117,7 @@ function AppContent() {
             childList: true,
             characterData: true,
             attributes: true,
-            attributeFilter: ['title', 'placeholder', 'aria-label', 'alt']
+            attributeFilter: ['title', 'placeholder', 'aria-label', 'alt', 'data-tooltip']
         });
 
         return () => observer.disconnect();
