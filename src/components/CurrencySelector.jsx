@@ -1,8 +1,11 @@
 import { useCurrency } from '../context/useCurrency';
+import { useApp } from '../context/useApp';
+import { translateText } from '../i18n';
 
 // Selector de moneda de referencia + estado de la API de tipo de cambio.
 export function CurrencySelector() {
     const { currency, setCurrency, currencies, status, error, ratesDate, ratesStale, reload } = useCurrency();
+    const { language } = useApp();
 
     let note = '';
     if (currency === 'USD') {
@@ -44,7 +47,9 @@ export function CurrencySelector() {
                 }}
             >
                 {currencies.map((item) => (
-                    <option key={item.code} value={item.code}>{item.code} · {item.name}</option>
+                    <option key={item.code} value={item.code}>
+                        {item.code} · {translateText(item.name, language)}
+                    </option>
                 ))}
             </select>
             <span role="status" aria-live="polite" style={{ fontSize: '0.78rem', color: status === 'error' && !ratesDate ? '#f87171' : '#a3a3a3' }}>

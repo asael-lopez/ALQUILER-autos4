@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useApp } from '../context/useApp';
+import { translateText } from '../i18n.js';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -218,6 +219,7 @@ export const AdminDashboard = () => {
         return acc;
     }, {});
     const brandLabels = Object.keys(brandMap);
+    const translatedBrandLabels = brandLabels.map((label) => translateText(label, language));
     const brandValues = Object.values(brandMap);
 
     // Distribución de la flota por categoría
@@ -227,6 +229,7 @@ export const AdminDashboard = () => {
         return acc;
     }, {});
     const categoryLabels = Object.keys(categoryMap);
+    const translatedCategoryLabels = categoryLabels.map((label) => translateText(label, language));
     const categoryValues = Object.values(categoryMap);
 
     // Vehículos más consultados (usando la métrica de vistas)
@@ -315,27 +318,27 @@ export const AdminDashboard = () => {
                         className={scope === 'official' ? 'is-active' : ''}
                         onClick={() => setScope('official')}
                     >
-                        Oficiales ({scopeCounts.official})
+                        {translateText(`Oficiales (${scopeCounts.official})`, language)}
                     </button>
                     <button
                         type="button"
                         className={scope === 'demo' ? 'is-active' : ''}
                         onClick={() => setScope('demo')}
                     >
-                        DEMO ({scopeCounts.demo})
+                        {translateText(`DEMO (${scopeCounts.demo})`, language)}
                     </button>
                     <button
                         type="button"
                         className={scope === 'all' ? 'is-active' : ''}
                         onClick={() => setScope('all')}
                     >
-                        Todos ({scopeCounts.total})
+                        {translateText(`Todos (${scopeCounts.total})`, language)}
                     </button>
                 </div>
 
                 <p className="admin-filterbar-note">
                     <Info size={13} aria-hidden="true" />
-                    Mostrando: <strong>{scopeLabel}</strong> · período {dateFrom || 'inicio'} → {dateTo || 'hoy'}.
+                    {translateText(`Mostrando: ${scopeLabel} · período ${dateFrom || 'inicio'} → ${dateTo || 'hoy'}.`, language)}
                 </p>
             </section>
 
@@ -458,7 +461,7 @@ export const AdminDashboard = () => {
                         ) : (
                             <Doughnut
                                 data={{
-                                    labels: brandLabels,
+                                    labels: translatedBrandLabels,
                                     datasets: [{
                                         data: brandValues,
                                         backgroundColor: PIE_PALETTE,
@@ -480,7 +483,7 @@ export const AdminDashboard = () => {
                         ) : (
                             <Doughnut
                                 data={{
-                                    labels: categoryLabels,
+                                    labels: translatedCategoryLabels,
                                     datasets: [{
                                         data: categoryValues,
                                         backgroundColor: PIE_PALETTE,
@@ -583,7 +586,7 @@ export const AdminDashboard = () => {
                                     <td>{r.clienteNombre || r.usuario || '—'}</td>
                                     <td>{r.autoNombre || 'Vehículo'}</td>
                                     <td className="admin-cell-muted">
-                                        {new Date(r.date || r.fechaInicio).toLocaleDateString('es-SV')}
+                                        {new Date(r.date || r.fechaInicio).toLocaleDateString(language === 'en' ? 'en-US' : 'es-SV')}
                                     </td>
                                     <td className="admin-cell-price">${(parseFloat(r.monto) || 0).toFixed(2)}</td>
                                     <td><StatusBadge estado={r.estado} /></td>

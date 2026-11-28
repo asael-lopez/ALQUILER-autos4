@@ -114,10 +114,10 @@ export function convertFromUSD(amountUSD, currency, rates) {
     return Number.isFinite(rate) ? amount * rate : null;
 }
 
-export function formatMoney(amount, currency) {
+export function formatMoney(amount, currency, locale = 'es-SV') {
     if (amount === null || amount === undefined || !Number.isFinite(Number(amount))) return '—';
     try {
-        return new Intl.NumberFormat('es-SV', {
+        return new Intl.NumberFormat(locale, {
             style: 'currency',
             currency,
             currencyDisplay: 'code',

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useApp } from '../context/useApp';
+import { translateText } from '../i18n.js';
 import { WeatherForecast } from '../components/WeatherForecast';
 import { formatMoney } from '../services/exchangeService';
 import {
@@ -25,10 +26,10 @@ function getLocalDate(dateString) {
     return Number.isNaN(date.getTime()) ? null : date;
 }
 
-function formatDate(dateString) {
+function formatDate(dateString, language) {
     const date = getLocalDate(dateString);
     return date
-        ? date.toLocaleDateString('es-SV', { day: 'numeric', month: 'long', year: 'numeric' })
+        ? date.toLocaleDateString(language === 'en' ? 'en-US' : 'es-SV', { day: 'numeric', month: 'long', year: 'numeric' })
         : 'Fecha no disponible';
 }
 
@@ -55,7 +56,7 @@ function getCountdown(reservation, now) {
 }
 
 export const Dashboard = () => {
-    const { userEmail, reservations, cars } = useApp();
+    const { userEmail, reservations, cars, language } = useApp();
     const [now, setNow] = useState(() => Date.now());
     const [selectedReservation, setSelectedReservation] = useState(null);
 
@@ -112,7 +113,9 @@ export const Dashboard = () => {
                 <div className="admin-user-notice is-warning">
                     <Clock size={20} />
                     <div>
-                        <strong>Tienes {pendientes} reserva(s) pendientes de aprobación.</strong>
+                        <strong>
+                            {translateText(`Tienes ${pendientes} reserva(s) pendientes de aprobación.`, language)}
+                        </strong>
                         <p>El equipo de Santa Lucía revisará tu solicitud. Aquí podrás seguir su avance.</p>
                     </div>
                 </div>
@@ -132,6 +135,7 @@ export const Dashboard = () => {
                                 reservation={reservation}
                                 image={getCarImage(reservation)}
                                 now={now}
+                                language={language}
                                 onInspect={() => setSelectedReservation(reservation)}
                             />
                         ))}
@@ -170,6 +174,7 @@ export const Dashboard = () => {
                 <ReservationDetails
                     reservation={selectedReservation}
                     image={getCarImage(selectedReservation)}
+                    language={language}
                     onClose={() => setSelectedReservation(null)}
                 />
             )}
@@ -179,7 +184,7 @@ export const Dashboard = () => {
 
 const PROCESS_STEPS = ['Solicitud enviada', 'En proceso', 'Listo para retirar'];
 
-function ReservationCard({ reservation, image, now, onInspect }) {
+function ReservationCard({ reservation, image, now, language, onInspect }) {
     const step = getProgressStep(reservation, now);
     const countdown = getCountdown(reservation, now);
     const terminal = step < 0;
@@ -259,7 +264,7 @@ function ReservationCard({ reservation, image, now, onInspect }) {
                     <div className="reservation-item-footer">
                         <div className="reservation-date-summary">
                             <CalendarDays size={16} />
-                            <span>{formatDate(reservation.fechaInicio)} <span aria-hidden="true">→</span> {formatDate(reservation.fechaFin)}</span>
+                            <span>{formatDate(reservation.fechaInicio, language)} <span aria-hidden="true">→</span> {formatDate(reservation.fechaFin, language)}</span>
                         </div>
                         {countdown ? (
                             <div className="reservation-countdown" aria-live="off">
@@ -280,7 +285,7 @@ function ReservationCard({ reservation, image, now, onInspect }) {
     );
 }
 
-function ReservationDetails({ reservation, image, onClose }) {
+function ReservationDetails({ reservation, image, language, onClose }) {
     return (
         <div className="reservation-modal-backdrop" onMouseDown={onClose}>
             <section
@@ -310,11 +315,11 @@ function ReservationDetails({ reservation, image, onClose }) {
                     <dl className="reservation-details-list">
                         <div>
                             <dt><CalendarDays size={16} /> Recogida</dt>
-                            <dd>{formatDate(reservation.fechaInicio)}</dd>
+                            <dd>{formatDate(reservation.fechaInicio, language)}</dd>
                         </div>
                         <div>
                             <dt><CalendarDays size={16} /> Devolución</dt>
-                            <dd>{formatDate(reservation.fechaFin)}</dd>
+                            <dd>{formatDate(reservation.fechaFin, language)}</dd>
                         </div>
                         <div>
                             <dt><MapPin size={16} /> Lugar de recogida</dt>
@@ -326,7 +331,7 @@ function ReservationDetails({ reservation, image, onClose }) {
                                 {reservation.dias || '—'} día(s) · ${(parseFloat(reservation.monto) || 0).toFixed(2)}
                                 {reservation.totalReferencia != null && (
                                     <small style={{ display: 'block', color: '#a3a3a3' }}>
-                                        ≈ {formatMoney(reservation.totalReferencia, reservation.monedaReferencia)} (tasa del {reservation.fechaTasaCambio || 'día de la solicitud'})
+                                        ≈ {formatMoney(reservation.totalReferencia, reservation.monedaReferencia, language === 'en' ? 'en-US' : 'es-SV')} (tasa del {reservation.fechaTasaCambio || 'día de la solicitud'})
                                     </small>
                                 )}
                             </dd>

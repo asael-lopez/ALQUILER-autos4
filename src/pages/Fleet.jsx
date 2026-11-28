@@ -10,6 +10,7 @@ import { formatMoney } from '../services/exchangeService';
 import { fetchWeatherForRange, formatWeatherSummary } from '../services/weatherService';
 import { getDistanceKm } from '../services/mapaService';
 import { MAIN_BRANCH } from '../data/branches';
+import { translateText } from '../i18n';
 
 const WHATSAPP_PHONE = '50361535807';
 
@@ -50,7 +51,8 @@ export const Fleet = () => {
         favorites,
         toggleFavorite,
         registerCarView,
-        userLocation
+        userLocation,
+        language
     } = useApp();
     const { currency, rates: fxRates, ratesDate, convert } = useCurrency();
 
@@ -79,13 +81,17 @@ export const Fleet = () => {
         const next3Days = formatDate(new Date(Date.now() + 3 * 24 * 60 * 60 * 1000));
         const rates = getPublicRateSummary(car);
         const defaultQuote = getRentalQuote(car, 3);
+        const categoryLabel = translateText(car.categoriaLabel || car.categoria || 'Vehículo', language);
+        const transmissionLabel = translateText(car.transmision || 'Transmisión por confirmar', language);
 
         // --- Datos de APIs externas que entran al flujo de reserva ---
         // 1) Tipo de cambio (Frankfurter): equivalente del total en otra moneda.
         const fxLabel = (amountUSD) => {
             if (currency === 'USD') return '';
             const converted = convert(amountUSD, currency);
-            return converted === null ? '' : `≈ ${formatMoney(converted, currency)} (referencial, se cobra en USD)`;
+            return converted === null
+                ? ''
+                : `≈ ${formatMoney(converted, currency, language === 'en' ? 'en-US' : 'es-SV')} (referencial, se cobra en USD)`;
         };
         // 2) Geocodificación (Nominatim): distancia de la dirección buscada en el mapa.
         const distanceKm = userLocation
@@ -109,7 +115,7 @@ export const Fleet = () => {
                     <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 11px 12px; margin-bottom: 14px; border: 1px solid #303030; border-radius: 8px; background: #191919;">
                         <div>
                             <strong style="display: block; color: #fff;">${car.nombre}</strong>
-                            <span style="font-size: 0.8rem; color: #a3a3a3;">${car.categoriaLabel || car.categoria || 'Vehículo'} · ${car.transmision || 'Transmisión por confirmar'}</span>
+                            <span style="font-size: 0.8rem; color: #a3a3a3;">${categoryLabel} · ${transmissionLabel}</span>
                         </div>
                         <div style="text-align: right;">
                             <strong style="display: block; white-space: nowrap; color: #fff;">${formatUSD(rates.dailyRate)} / día</strong>
@@ -334,7 +340,7 @@ export const Fleet = () => {
                     `Descuento por duración: ${Math.round((reservation.descuentoDuracion || 0) * 100)}%`,
                     `Total estimado: ${formatUSD(reservation.monto)}`,
                     reservation.totalReferencia != null
-                        ? `Equivalente referencial: ${formatMoney(reservation.totalReferencia, reservation.monedaReferencia)}`
+                        ? `Equivalente referencial: ${formatMoney(reservation.totalReferencia, reservation.monedaReferencia, language === 'en' ? 'en-US' : 'es-SV')}`
                         : '',
                     reservation.distanciaSucursalKm != null
                         ? `Distancia a la sucursal: ${reservation.distanciaSucursalKm} km`
@@ -349,7 +355,7 @@ export const Fleet = () => {
                     html: `
                         <p style="margin: 0 0 8px;">${reservation.autoNombre} · ${reservation.fechaInicio} al ${reservation.fechaFin}</p>
                         <p style="margin: 0 0 14px;">Total estimado: <strong>${formatUSD(reservation.monto)}</strong>
-                            ${reservation.totalReferencia != null ? `<br><span style="font-size: 0.85rem; color: #a3a3a3;">≈ ${formatMoney(reservation.totalReferencia, reservation.monedaReferencia)} (referencial)</span>` : ''}
+                            ${reservation.totalReferencia != null ? `<br><span style="font-size: 0.85rem; color: #a3a3a3;">≈ ${formatMoney(reservation.totalReferencia, reservation.monedaReferencia, language === 'en' ? 'en-US' : 'es-SV')} (referencial)</span>` : ''}
                         </p>
                         <p style="font-size: 0.88rem; color: #a3a3a3; margin: 0 0 14px;">
                             El PDF con los datos del vehículo y tu perfil está listo. La solicitud ya aparece en tus reservas.
@@ -765,7 +771,9 @@ export const Fleet = () => {
                                     <strong>{formatUSD(selectedCarRates.dailyRate)} / día</strong>
                                 </div>
                                 <p className="fleet-details-hourly">
-                                    Equivalencia estimada: {formatUSD(selectedCarRates.hourlyReference)} / hora
+                                    {language === 'en' ? 'Estimated equivalent: ' : 'Equivalencia estimada: '}
+                                    {formatUSD(selectedCarRates.hourlyReference)}
+                                    {language === 'en' ? ' / hour' : ' / hora'}
                                     <small>Solo referencia matemática; no se ofrece alquiler por hora.</small>
                                 </p>
                                 <div className="fleet-details-price-grid">

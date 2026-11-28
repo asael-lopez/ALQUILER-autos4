@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import { useApp } from '../context/useApp';
+import { translateText } from '../i18n.js';
 import {
     Car,
     CalendarCheck,
@@ -78,7 +79,8 @@ export const AdminGestion = () => {
         updateReservationStatus,
         deleteReservation,
         createMaintenance,
-        completeMaintenance
+        completeMaintenance,
+        language
     } = useApp();
 
     // Pestaña activa dentro de la gestión
@@ -495,7 +497,9 @@ export const AdminGestion = () => {
                     <section className="admin-card">
                         <div className="admin-toolbar">
                             <h2 className="admin-card-title no-margin">Vehículos pendientes de publicación</h2>
-                            <span className="admin-page-chip">{pendingCars.length} por revisar</span>
+                            <span className="admin-page-chip">
+                                {translateText(`${pendingCars.length} por revisar`, language)}
+                            </span>
                         </div>
                         {pendingCars.length === 0 ? (
                             <p className="admin-empty">No hay vehículos pendientes de aprobación.</p>
@@ -547,7 +551,9 @@ export const AdminGestion = () => {
                     <section className="admin-card">
                         <div className="admin-toolbar">
                             <h2 className="admin-card-title no-margin">Solicitudes de reserva pendientes</h2>
-                            <span className="admin-page-chip">{pendingReservations.length} por revisar</span>
+                            <span className="admin-page-chip">
+                                {translateText(`${pendingReservations.length} por revisar`, language)}
+                            </span>
                         </div>
                         {pendingReservations.length === 0 ? (
                             <p className="admin-empty">No hay solicitudes pendientes. Todo está al día.</p>
@@ -690,21 +696,21 @@ export const AdminGestion = () => {
                             className={historyScope === 'official' ? 'is-active' : ''}
                             onClick={() => setHistoryScope('official')}
                         >
-                            Oficiales ({historyCounts.official})
+                            {translateText(`Oficiales (${historyCounts.official})`, language)}
                         </button>
                         <button
                             type="button"
                             className={historyScope === 'demo' ? 'is-active' : ''}
                             onClick={() => setHistoryScope('demo')}
                         >
-                            DEMO ({historyCounts.demo})
+                            {translateText(`DEMO (${historyCounts.demo})`, language)}
                         </button>
                         <button
                             type="button"
                             className={historyScope === 'all' ? 'is-active' : ''}
                             onClick={() => setHistoryScope('all')}
                         >
-                            Todos ({historyCounts.total})
+                            {translateText(`Todos (${historyCounts.total})`, language)}
                         </button>
                     </div>
 
@@ -736,7 +742,7 @@ export const AdminGestion = () => {
                                             <span className="admin-history-detail">{movement.detalle}</span>
                                             <span className="admin-cell-muted">
                                                 {movement.marca ? `${movement.marca} · ` : ''}
-                                                {new Date(movement.fecha).toLocaleString('es-SV', {
+                                                {new Date(movement.fecha).toLocaleString(language === 'en' ? 'en-US' : 'es-SV', {
                                                     day: '2-digit', month: 'short', year: 'numeric',
                                                     hour: '2-digit', minute: '2-digit'
                                                 })}

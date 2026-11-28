@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { CurrencyContext } from './currencyStore';
+import { useApp } from './useApp.js';
 import {
     BASE_CURRENCY,
     SUPPORTED_CURRENCIES,
@@ -20,6 +21,7 @@ function loadPreferredCurrency() {
 // Carga las tasas una vez al iniciar y las comparte con Fleet, CarCard,
 // reservas y el resto de módulos que necesiten mostrar otra moneda.
 export function CurrencyProvider({ children }) {
+    const { language } = useApp();
     const [currency, setCurrencyState] = useState(loadPreferredCurrency);
     const [ratesData, setRatesData] = useState(() => {
         const cached = readCachedRates();
@@ -88,10 +90,12 @@ export function CurrencyProvider({ children }) {
             formatEquivalent: (amountUSD, target = currency) => {
                 if (target === BASE_CURRENCY) return '';
                 const converted = convertFromUSD(amountUSD, target, rates);
-                return converted === null ? '' : `≈ ${formatMoney(converted, target)}`;
+                return converted === null
+                    ? ''
+                    : `≈ ${formatMoney(converted, target, language === 'en' ? 'en-US' : 'es-SV')}`;
             }
         };
-    }, [currency, setCurrency, ratesData, status, error, loadRates]);
+    }, [currency, setCurrency, ratesData, status, error, loadRates, language]);
 
     return <CurrencyContext.Provider value={value}>{children}</CurrencyContext.Provider>;
 }
