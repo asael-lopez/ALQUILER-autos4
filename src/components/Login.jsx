@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useApp } from '../context/useApp.js';
 import { translateText } from '../i18n.js';
 import { authenticateUser, registerUser } from '../services/userStore.js';
+import './Login.css';
 
 const isValidEmail = (value) => (
     value.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
