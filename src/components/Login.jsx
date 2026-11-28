@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useApp } from '../context/useApp.js';
 import { translateText } from '../i18n.js';
 import { authenticateUser, registerUser } from '../services/userStore.js';
@@ -19,6 +19,7 @@ const isValidPhone = (value) => {
 export function Login({ onNavigate }) {
     const { language, setLanguage, login } = useApp();
     const [activeForm, setActiveForm] = useState('login');
+    const [activeSlide, setActiveSlide] = useState(1);
     const [loginData, setLoginData] = useState({ email: '', password: '', rememberMe: false });
     const [registerData, setRegisterData] = useState({
         name: '',
@@ -34,6 +35,13 @@ export function Login({ onNavigate }) {
     const [success, setSuccess] = useState(null);
 
     const t = (text) => translateText(text, language);
+
+    useEffect(() => {
+        const carouselTimer = window.setInterval(() => {
+            setActiveSlide((current) => (current % 5) + 1);
+        }, 2200);
+        return () => window.clearInterval(carouselTimer);
+    }, []);
 
     const changeForm = (form) => {
         setActiveForm(form);
@@ -142,7 +150,7 @@ export function Login({ onNavigate }) {
                         {[1, 2, 3, 4, 5].map((slide) => (
                             <div
                                 key={slide}
-                                className={`carousel-slide carousel-slide-${slide}${slide === 1 ? ' active' : ''}`}
+                                className={`carousel-slide carousel-slide-${slide}${slide === activeSlide ? ' active' : ''}`}
                             />
                         ))}
                     </div>
