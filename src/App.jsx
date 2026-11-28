@@ -13,6 +13,7 @@ import { Reports } from './pages/Reports';
 import { PublicarVehiculo } from './pages/PublicarVehiculo';
 import { Home } from './pages/Home';
 import { MapaSucursales } from './components/MapaSucursales';
+import { Login } from './components/Login';
 import { SiteHeader } from './components/SiteHeader';
 import { SiteFooter } from './components/SiteFooter';
 
@@ -140,16 +141,17 @@ function AppContent() {
 
     useEffect(() => {
         if (isBlocked) {
-            window.location.replace('/login-registro.html');
+            window.history.replaceState({}, '', '/?tab=login');
         }
-    }, [isBlocked, activeTab]);
+    }, [isBlocked]);
 
     if (new URLSearchParams(window.location.search).get('embed') === 'map') {
         return <MapaSucursales />;
     }
 
-    // Mientras se redirige, no se muestra el panel restringido.
-    if (isBlocked) return null;
+    if (activeTab === 'login' || isBlocked) {
+        return <Login onNavigate={handleTabChange} />;
+    }
 
     return (
         <div className="app-shell">

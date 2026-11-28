@@ -177,7 +177,7 @@ export function SiteHeader({ activeTab, onTabChange }) {
 
     const logout = () => {
         closeSession();
-        window.location.href = '/login-registro.html';
+        onTabChange('login');
     };
 
     const toggleSavedVehicle = toggleFavorite;
@@ -283,7 +283,11 @@ export function SiteHeader({ activeTab, onTabChange }) {
 
                         {/* Si NO hay sesión, se muestra el acceso a "Mi Cuenta" */}
                         {!isAuthenticated && (
-                            <a href="/login-registro.html" className="site-account-button">
+                            <a
+                                href="/?tab=login"
+                                className="site-account-button"
+                                onClick={(event) => changeTab(event, 'login')}
+                            >
                                 <i className="fas fa-user" aria-hidden="true" />
                                 <span>Mi Cuenta</span>
                             </a>
